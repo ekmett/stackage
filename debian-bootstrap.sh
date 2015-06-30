@@ -6,28 +6,70 @@
 # Quick start:
 # wget -O - https://raw.github.com/fpco/stackage/master/debian-bootstrap.sh | bash -ex
 
-sudo apt-get update
-sudo apt-get install -y build-essential libncurses-dev git libgmp3c2 libgmp3-dev zlib1g-dev libedit2 libedit-dev freeglut3-dev libglu1-mesa-dev libglib2.0-dev libcairo2-dev libpango1.0-dev libgtk2.0-dev zip
-wget http://www.haskell.org/ghc/dist/7.4.2/ghc-7.4.2-x86_64-unknown-linux.tar.bz2
-tar jxfv ghc-7.4.2-x86_64-unknown-linux.tar.bz2
-cd ghc-7.4.2
-./configure --prefix=/opt/ghc-7.4.2
-sudo make install
-echo 'export PATH=/opt/ghc-7.4.2/bin:~/.cabal/bin:$PATH' >> ~/.bashrc
-source ~/.bashrc
-cd ..
-wget http://hackage.haskell.org/packages/archive/cabal-install/1.16.0.2/cabal-install-1.16.0.2.tar.gz
-tar zxfv cabal-install-1.16.0.2.tar.gz
-cd cabal-install-1.16.0.2/
-bash bootstrap.sh
-cd ..
-git clone --recursive https://github.com/fpco/stackage
-cd stackage
-cabal update
-cabal install
+# NOTE: Requires that GHC and Cabal are installed and on your PATH. For
+# instructions, see:
+#    http://www.stackage.org/install
 
-# Temporary hack for cairo:
-cabal install alex happy
-cabal install gtk2hs-buildtools
+add-apt-repository -y ppa:zoogie/sdl2-snapshots
 
-stackage build
+apt-get update
+apt-get install -y \
+    build-essential \
+    libncurses-dev \
+    git \
+    wget \
+    m4 \
+    texlive-full \
+    libgmp3-dev \
+    zlib1g-dev \
+    libedit2 \
+    libedit-dev \
+    freeglut3-dev \
+    libglu1-mesa-dev \
+    libglib2.0-dev \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libgtk2.0-dev \
+    zip \
+    libdevil-dev \
+    llvm \
+    libbz2-dev \
+    libjudy-dev \
+    libsqlite3-dev \
+    libmysqlclient-dev \
+    libpq-dev \
+    libicu-dev \
+    libssl-dev \
+    libgsl0-dev \
+    libblas-dev \
+    liblapack-dev \
+    libcurl4-openssl-dev \
+    libfreenect-dev \
+    libnotify-dev \
+    libgd2-xpm-dev \
+    libyaml-dev \
+    liblzma-dev \
+    libsdl2-dev \
+    libxss-dev \
+    libgtk-3-dev \
+    libxml2-dev \
+    libgsasl7-dev \
+    libphash0-dev \
+    libopenal-dev \
+    libhidapi-dev \
+    libzmq3-dev
+
+mkdir /tmp/nettle-build
+(
+cd /tmp/nettle-build
+wget https://ftp.gnu.org/gnu/nettle/nettle-2.7.1.tar.gz
+tar zxf nettle-2.7.1.tar.gz
+cd nettle-2.7.1
+./configure --prefix=/usr
+make
+make install
+
+mkdir -p /usr/lib/x86_64-linux-gnu/
+ln -sfv /usr/lib/libnettle.so.4.7 /usr/lib/x86_64-linux-gnu/libnettle.so.4
+)
+rm -rf /tmp/nettle-build
